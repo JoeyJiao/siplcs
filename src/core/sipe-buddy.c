@@ -1019,6 +1019,11 @@ static void get_info_ab_entry_response(struct sipe_core_private *sipe_private,
 								    info,
 								    SIPE_BUDDY_INFO_WORK_PHONE,
 								    first);
+				} else if (sipe_strcase_equal(name, "mobile")) {
+					sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+								    info,
+								    SIPE_BUDDY_INFO_MOBILE_PHONE,
+								    first);
 				}
 
 				g_free(first);
