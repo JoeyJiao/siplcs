@@ -953,8 +953,12 @@ static void get_info_ab_entry_response(struct sipe_core_private *sipe_private,
 {
 	struct ms_dlx_data *mdd = callback_data;
 	struct sipe_backend_buddy_info *info = NULL;
+	const gchar *who = mdd->other;
+	struct sipe_core_public *sipe_public = NULL;
+	sipe_backend_buddy buddy = NULL;
 	gchar *server_alias = NULL;
 	gchar *email        = NULL;
+	gchar *tmp	    = NULL;
 
 	if (soap_body) {
 		const sipe_xml *node;
@@ -973,7 +977,6 @@ static void get_info_ab_entry_response(struct sipe_core_private *sipe_private,
 								    "Value"));
 			const sipe_xml *values = sipe_xml_child(node,
 								"Values");
-
 			/* Single value entries */
 			if (!is_empty(value)) {
 
@@ -1034,6 +1037,24 @@ static void get_info_ab_entry_response(struct sipe_core_private *sipe_private,
 		}
 	}
 
+	/* add office, department info*/
+	sipe_public = &sipe_private->public;
+	buddy = sipe_backend_buddy_find(sipe_public, who, NULL);
+	tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_OFFICE);
+	if (tmp) {
+		sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+					    info,
+					    SIPE_BUDDY_INFO_OFFICE,
+					    tmp);
+	}
+	tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_DEPARTMENT);
+	if (tmp) {
+		sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+					    info,
+					    SIPE_BUDDY_INFO_DEPARTMENT,
+					    tmp);
+	}
+
 	/* this will show the minmum information */
 	get_info_finalize(sipe_private,
 			  info,
@@ -1041,6 +1062,7 @@ static void get_info_ab_entry_response(struct sipe_core_private *sipe_private,
 			  server_alias,
 			  email);
 
+	g_free(tmp);
 	g_free(email);
 	g_free(server_alias);
 	ms_dlx_free(mdd);
