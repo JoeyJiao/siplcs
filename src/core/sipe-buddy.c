@@ -1036,9 +1036,67 @@ static void get_info_ab_entry_response(struct sipe_core_private *sipe_private,
 			g_free(name);
 		}
 	}
+	else {
+	    /* read from blist.xml if soap request returns error*/
+	    info = sipe_backend_buddy_info_start(SIPE_CORE_PUBLIC);
+
+	    sipe_public = &sipe_private->public;
+	    buddy = sipe_backend_buddy_find(sipe_public, who, NULL);
+	    tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_DISPLAY_NAME);
+	    if (tmp) {
+		    sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+						info,
+						SIPE_BUDDY_INFO_DISPLAY_NAME,
+						tmp);
+	    }
+	    tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_EMAIL);
+	    if (tmp) {
+		    sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+						info,
+						SIPE_BUDDY_INFO_EMAIL,
+						tmp);
+	    }
+	    tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_JOB_TITLE);
+	    if (tmp) {
+		    sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+						info,
+						SIPE_BUDDY_INFO_JOB_TITLE,
+						tmp);
+	    }
+	    tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_COMPANY);
+	    if (tmp) {
+		    sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+						info,
+						SIPE_BUDDY_INFO_COMPANY,
+						tmp);
+	    }
+	    tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_COUNTRY);
+	    if (tmp) {
+		    sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+						info,
+						SIPE_BUDDY_INFO_COUNTRY,
+						tmp);
+	    }
+	    tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_WORK_PHONE);
+	    if (tmp) {
+		    sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+						info,
+						SIPE_BUDDY_INFO_WORK_PHONE,
+						tmp);
+	    }
+	    tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_MOBILE_PHONE);
+	    if (tmp) {
+		    sipe_backend_buddy_info_add(SIPE_CORE_PUBLIC,
+						info,
+						SIPE_BUDDY_INFO_MOBILE_PHONE,
+						tmp);
+	    }
+	}
 
 	/* add office, department info*/
-	sipe_public = &sipe_private->public;
+	if (!sipe_public) {
+	    sipe_public = &sipe_private->public;
+	}
 	buddy = sipe_backend_buddy_find(sipe_public, who, NULL);
 	tmp=sipe_backend_buddy_get_string(sipe_public,buddy,SIPE_BUDDY_INFO_OFFICE);
 	if (tmp) {
